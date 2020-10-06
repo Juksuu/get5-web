@@ -310,9 +310,13 @@ def teams_user(userid):
     page = util.as_int(request.values.get('page'), on_fail=1)
     json_data = util.as_int(request.values.get('json'), on_fail=0)
 
+    teams = user.teams
+    if g.user.super_admin:
+        teams = Team.query.order_by(-Team.id)
+
     if json_data:
         teams_dict = {}
-        for team in user.teams:
+        for team in teams:
             team_dict = {}
             team_dict['name'] = team.name
             team_dict['tag'] = team.tag
@@ -327,9 +331,9 @@ def teams_user(userid):
     else:
         # Render teams page
         my_teams = (g.user is not None and ((userid == g.user.id) or g.user.super_admin))
-        teams = user.teams.paginate(page, 20)
+        teams_paginated = teams.paginate(page, 20)
         return render_template(
-            'teams.html', user=g.user, teams=teams, my_teams=my_teams,
+            'teams.html', user=g.user, teams=teams_paginated, my_teams=my_teams,
             page=page, owner=user)
 
 
