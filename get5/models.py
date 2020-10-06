@@ -118,7 +118,7 @@ class GameServer(db.Model):
 
 
 class Team(db.Model):
-    MAXPLAYERS = app.config['TEAM_MAXPLAYERS']
+    MAXPLAYERS = util.as_int(app.config['TEAM_MAXPLAYERS'], on_fail=7)
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
