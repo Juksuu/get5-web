@@ -148,9 +148,15 @@ class MatchForm(Form):
             self.team2_id.choices = []
 
         team_ids = [team.id for team in user.teams]
-        for team in Team.query.filter_by(public_team=True):
-            if team.id not in team_ids:
-                team_ids.append(team.id)
+
+        if g.user is not None and g.user.super_admin:
+            for team in Team.query.order_by(-Team.id):
+                if team.id not in team_ids:
+                    team_ids.append(team.id)
+        else:
+            for team in Team.query.filter_by(public_team=True):
+                if team.id not in team_ids:
+                    team_ids.append(team.id)
 
         team_tuples = []
         for teamid in team_ids:
