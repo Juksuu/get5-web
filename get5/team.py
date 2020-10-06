@@ -311,7 +311,7 @@ def teams_user(userid):
     json_data = util.as_int(request.values.get('json'), on_fail=0)
 
     teams = user.teams
-    if g.user.super_admin:
+    if g.user is not None and g.user.super_admin:
         teams = Team.query.order_by(-Team.id)
 
     if json_data:
